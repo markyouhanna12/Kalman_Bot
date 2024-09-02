@@ -364,12 +364,8 @@ open a new terminal :
 /imu_euler/yaw
 
 # The IMU readings are ready, the steps to be done are:
-## Step 1: Modify the URDF file to add Gaussian noise to the IMU sensor.
-## Step 2: Filter the noisy IMU data using the Kalman Filter in a ROS node.
 
-
-
-### step 1: Adding Gaussian Noise to the IMU in the URDF File
+## step 1: Adding Gaussian Noise to the IMU in the URDF File
 In the IMU sensor definition :
 ```
 <imu> 
@@ -393,7 +389,8 @@ In the IMU sensor definition :
 </gazebo>
 
 ```
-Modifying the <type> parameter to introduce Gaussian noise and with a deviation of 0.5 to the IMU data., then saving the URDF file and restarting our simulation in Gazebo.
+**Modifying the <type> parameter to introduce Gaussian noise and with a deviation of 0.5 to the IMU data., then saving the URDF file and restarting our simulation in Gazebo.**
+
 
 ## Step 2: Filter the noisy IMU data using the Kalman Filter in a ROS node.
 
@@ -475,7 +472,9 @@ if __name__ == '__main__':
         pass  # Handle any exceptions that may occur
 ```
 
+Make the script executable
 
+`$ chmod +x scripts/kalman_filter_node.py`
 
 
 # after adding noise and implement Kalman filter, we should now visualize the graph between filter and the noise
