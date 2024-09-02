@@ -107,7 +107,7 @@ Run:
 ### 4. run the Gazebo world
  Launch Simulation World
 
-**Note>>** you must do this step every time before lunching to give the TURTLEBOT3 MODEL an argument between {burger, waffle, waffle_pi } if you want to know the Specifications between them check the following link:[Turtlebot Types](https://emanual.robotis.com/docs/en/platform/turtlebot3/features/#specifications)
+**Note>>** you must do this step every time before lunching to give the TURTLEBOT3 MODEL an argument between {burger, waffle, waffle_pi } if you want to know the Specifications between them check the following link: [Turtlebot Types](https://emanual.robotis.com/docs/en/platform/turtlebot3/features/#specifications)
 
  okay we will continue lunching:
 
@@ -477,7 +477,7 @@ Make the script executable
 `$ chmod +x scripts/kalman_filter_node.py`
 
 
-# after adding noise and implement Kalman filter, we should now visualize the graph between filter and the noise
+# After adding noise and implement Kalman filter, we should now visualize the graph between filter and the noise
 
 
 
