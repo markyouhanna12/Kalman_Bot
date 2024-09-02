@@ -4,7 +4,9 @@
 1.1 Create the root workspace directory (we’lluse catkin_ws)
 
 `$ cd ~/`
+
 `$ mkdir -p ∼/catkin_ws/src`
+
 `$ cd ∼/catkin ws/`
 
 1.2 Initialize the catkin workspace
@@ -14,6 +16,7 @@
 1.3 Check the crearted folders to make sure the workspace created
 
 `$ cd ∼/catkin_ws/`
+
 `$ ls`
 
 **build**         **devel**         **src**
@@ -94,7 +97,6 @@ Run:
 `$ git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git`
 
 `$ git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3.git`
-
 
 `$ git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git`
 
