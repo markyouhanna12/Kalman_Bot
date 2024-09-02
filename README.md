@@ -160,7 +160,8 @@ then we will open a new terminal and will see what topics there using:
 `$ rostopic list`
 
 **the output be like this:**
-```/camera/depth/camera_info
+```
+/camera/depth/camera_info
 /camera/depth/image_raw
 /camera/depth/points
 /camera/parameter_descriptions
@@ -191,7 +192,8 @@ then we will open a new terminal and will see what topics there using:
 /rosout
 /rosout_agg
 /scan
-/tf```
+/tf
+```
 
 as you can see there is topic named /imu if we want to see the topic:
 
@@ -227,7 +229,8 @@ and we will run raviz using the LiDAR topic data (/scan):
 9.3 We will open vs code and choose the folder **scripts** of the **imu_converter** and make  a python file in it and named it (**imu_converter**)
 
 **the python script:**
-```#!/usr/bin/env python
+```
+#!/usr/bin/env python
 
 import rospy
 from sensor_msgs.msg import Imu
@@ -289,7 +292,6 @@ if __name__ == '__main__':
 
     # Keep the node running
     rospy.spin()
-
 ```
 
 9.4 Make the script executable
