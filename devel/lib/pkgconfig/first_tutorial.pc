@@ -1,0 +1,8 @@
+prefix=/home/vboxuser/catkin_workspace/devel
+
+Name: first_tutorial
+Description: Description of first_tutorial
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

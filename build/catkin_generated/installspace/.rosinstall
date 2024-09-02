@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/vboxuser/catkin_workspace/install/setup.sh
