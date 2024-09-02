@@ -4,7 +4,7 @@
 1.1 Create the root workspace directory (we’lluse catkin_ws)
 
 `$ cd ~/`
-`$ mkdir -p ∼/catkin ws/src`
+`$ mkdir -p ∼/catkin_ws/src`
 `$ cd ∼/catkin ws/`
 
 1.2 Initialize the catkin workspace
@@ -13,7 +13,7 @@
 
 1.3 Check the crearted folders to make sure the workspace created
 
-`$ cd ∼/catkin ws/`
+`$ cd ∼/catkin_ws/`
 `$ ls`
 
 **build**         **devel**         **src**
@@ -44,7 +44,7 @@ Install Pre-Built Debian\Ubuntu binary packages:
 
 enter the directory of the workspace you have created:
 
-`$ cd ∼/catkin ws/`
+`$ cd ∼/catkin_ws/`
 
 Noetic is using the gazebo 11.x series, start by installing it:
 
@@ -356,3 +356,194 @@ open a new terminal :
 /imu_euler/roll
 /imu_euler/yaw
 
+# The IMU readings are ready, the steps to be done are:
+## Step 1: Modify the URDF file to add Gaussian noise to the IMU sensor.
+## Step 2: Filter the noisy IMU data using the Kalman Filter in a ROS node.
+
+
+
+### step 1: Adding Gaussian Noise to the IMU in the URDF File
+In the IMU sensor definition :
+```
+<imu> 
+  <noise>
+       <type>gaussian</type>
+        <rate>
+           <mean>0.5</mean>
+           <stddev>2e-4</stddev>
+           <bias_mean>0.0000075</bias_mean>
+           <bias_stddev>0.0000008</bias_stddev>
+         </rate>
+         <accel>
+            <mean>0.0</mean>
+            <stddev>1.7e-2</stddev>
+            <bias_mean>0.1</bias_mean>
+            <bias_stddev>0.001</bias_stddev>
+         </accel>
+      </noise>
+     </imu>
+   </plugin>
+</gazebo>
+
+```
+Modifying the <type> parameter to introduce Gaussian noise and with a deviation of 0.5 to the IMU data., then saving the URDF file and restarting our simulation in Gazebo.
+
+## Step 2: Filter the noisy IMU data using the Kalman Filter in a ROS node.
+
+### Create python script in the following directory:
+
+`$ cd ~/catkin_ws/src/imu_converter`
+
+### add the following code in a Python Script using vs code
+
+**Full Python Script**
+
+```
+#!/usr/bin/env python
+
+import rospy
+from sensor_msgs.msg import Imu  
+from std_msgs.msg import Float64  
+import tf.transformations  
+
+# Initializing global variables for the Kalman Filter
+previous_yaw = 0.0  
+estimate_error = 1.0  
+measurement_error = 0.1
+kalman_gain = 0.0  
+
+
+# Kalman Filter function to estimate the YAW angle
+def kalman_filter(yaw, previous_yaw, estimate_error, measurement_error):
+
+    kalman_gain = estimate_error / (estimate_error + measurement_error)
+    current_estimate = previous_yaw + kalman_gain * (yaw - previous_yaw)
+    estimate_error = (1 - kalman_gain) * estimate_error
+    
+    return current_estimate, estimate_error
+
+
+def imu_callback(data):
+    global previous_yaw, estimate_error 
+    
+    # Extract the quaternion representing the robot's orientation from the IMU data
+    quaternion = (
+        data.orientation.x,
+        data.orientation.y,
+        data.orientation.z,
+        data.orientation.w
+    )
+    
+    # Convert the quaternion to Euler angles (roll, pitch, yaw)
+    euler = tf.transformations.euler_from_quaternion(quaternion)
+    yaw = euler[2]  # in radians
+    
+    # Convert YAW angle from radians to degrees for easier interpretation
+    yaw_deg = yaw * 180.0 / 3.14159
+    
+    # Apply the Kalman Filter to get the filtered YAW angle
+    filtered_yaw, estimate_error = kalman_filter(yaw_deg, previous_yaw, estimate_error, measurement_error)
+    
+    # Update the previous YAW with the current filtered estimate
+    previous_yaw = filtered_yaw
+    
+    # Publish the filtered YAW angle on a new ROS topic
+    yaw_pub.publish(filtered_yaw)
+
+
+
+def main():
+    rospy.init_node('kalman_filter_node')  
+    
+    global yaw_pub
+    yaw_pub = rospy.Publisher('/filtered_yaw', Float64, queue_size=10) 
+  
+    rospy.Subscriber('/imu', Imu, imu_callback)  
+    rospy.spin()  
+
+if __name__ == '__main__':
+    try:
+        main()
+    except rospy.ROSInterruptException:
+        pass  # Handle any exceptions that may occur
+
+
+```
+
+
+
+
+# after adding noise and implement Kalman filter, we should now visualize the graph between filter and the noise
+
+
+
+## launch the robot
+
+`
+ $ export TURTLEBOT3_MODEL=waffle
+`
+`
+$ roslaunch turtlebot3_gazebo turtlebot3_world.launch
+`
+
+## run the filter
+
+**in the scripts in my package**
+
+
+`
+$ rosrun my_turtlebot3_package imu_yaw_filter.py
+`
+
+## run the imu readings that includes the noise
+
+`
+$ rostopic echo imu
+`
+
+## graph the data
+
+**install rqt_multiplot**
+
+`
+$ sudo apt-get install ros-<distro>-rqt-multiplot
+`
+
+**launch rqt**
+
+`
+$ rqt
+`
+
+**run the multiplot**
+
+`
+$ rqt_multiplot
+`
+
+## customize the graph
+
+1. select the gear icon, then select the add icon next to "curves"
+
+2. in X-Axis
+     - topic: imu
+     - type: sensor_msgs/imu
+
+3. in Y-Axis
+      - topic: imu/filterd_yaw
+      - type:  std_msgs/float64
+
+4. select Message Receipt Time for both axes
+
+5 run the graph
+
+## the output we got :
+
+[Graph](https://drive.google.com/file/d/1_jJUeYL0If4J1GEdZ6tcM2RFzVYqAD8H/view?usp=sharing)
+
+## the expected output :
+
+[Graph](https://i.sstatic.net/TonVO.jpg)
+
+
+there is might be an issue with the noise but after a lot of search we sadly didn't find a solution.
