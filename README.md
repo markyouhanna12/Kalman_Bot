@@ -31,8 +31,8 @@
 2.2 If Gazebo is not installed, you can install it using the following command:
 
   `$ curl -sSL http://get.gazebosim.org | sh`
-
-    Run
+  
+Run
 
 `$ gazebo`
 
@@ -216,6 +216,7 @@ and we will run raviz using the LiDAR topic data (/scan):
 ### 9. Convert the IMU readings from Quaternion to Degree and publish them on a new topic:
 
 9.1 Create a new package in the workspace named (**imu_converter**)
+
 `$ cd ~/catkin_ws/`
 
 `$ catkin_create_pkg imu_converter rospy std_msgs sensor_msgs`
@@ -317,7 +318,8 @@ open a new terminal :
 `$ rostopic list`
 
 **the output be like this:**
-```/camera/depth/camera_info
+```
+/camera/depth/camera_info
 /camera/depth/image_raw
 /camera/depth/points
 /camera/parameter_descriptions
@@ -351,7 +353,8 @@ open a new terminal :
 /rosout
 /rosout_agg
 /scan
-/tf```
+/tf
+```
 
 **as we can see there are the three topics of the directions: **
 /imu_euler/pitch
@@ -468,8 +471,6 @@ if __name__ == '__main__':
         main()
     except rospy.ROSInterruptException:
         pass  # Handle any exceptions that may occur
-
-
 ```
 
 
@@ -481,47 +482,33 @@ if __name__ == '__main__':
 
 ## launch the robot
 
-`
- $ export TURTLEBOT3_MODEL=waffle
-`
-`
-$ roslaunch turtlebot3_gazebo turtlebot3_world.launch
-`
+`$ export TURTLEBOT3_MODEL=waffle`
+
+`$ roslaunch turtlebot3_gazebo turtlebot3_world.launch`
 
 ## run the filter
 
 **in the scripts in my package**
 
-
-`
-$ rosrun my_turtlebot3_package imu_yaw_filter.py
-`
+`$ rosrun my_turtlebot3_package imu_yaw_filter.py`
 
 ## run the imu readings that includes the noise
 
-`
-$ rostopic echo imu
-`
+`$ rostopic echo imu`
 
 ## graph the data
 
 **install rqt_multiplot**
 
-`
-$ sudo apt-get install ros-<distro>-rqt-multiplot
-`
+`$ sudo apt-get install ros-<distro>-rqt-multiplot`
 
 **launch rqt**
 
-`
-$ rqt
-`
+`$ rqt`
 
 **run the multiplot**
 
-`
-$ rqt_multiplot
-`
+`$ rqt_multiplot`
 
 ## customize the graph
 
